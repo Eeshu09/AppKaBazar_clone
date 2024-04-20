@@ -14,6 +14,9 @@ import { Routes,Route } from 'react-router-dom';
 import Productdetails from './components/Productdetails/productdetails';
 import Cart from './components/Cart/cart'; 
 import { useState,useEffect } from 'react';
+import PageNotFound from './components/PageNotFound';
+import Sucess from './components/Sucess';
+import Cancel from './components/Cancel';
 import axios from 'axios'
 
 function App() {
@@ -28,6 +31,11 @@ function App() {
               <Route path='/products/:id' element={<Products />}></Route>
               <Route path='/productdetails' element={<Productdetails/>}></Route>
               <Route path='/cart' element={<Cart/>}></Route>
+              <Route path='*' element={<PageNotFound/>}></Route>
+              <Route path='/sucess' element={<Sucess/>}></Route>
+              <Route path='/cancel' element={<Cancel/>}></Route>
+
+
      </Routes>
 
 

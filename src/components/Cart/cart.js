@@ -7,6 +7,8 @@ import { useSelector,useDispatch } from 'react-redux';
 import { useLoaderData } from 'react-router-dom';
 import { useLocalData } from '../reducer/cartReducer';
 import { clearCart } from '../action/action';
+import {loadStripe} from '@stripe/stripe-js';
+
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -46,7 +48,29 @@ const handleClearCart=()=>{
   const final_amount = total_amount + deliveryCharge;
   const total = total_amount < 600 ? total_amount + deliveryCharge : total_amount
 
- 
+ //payment integration
+ const makePayment=async()=>{
+  const stripe = await loadStripe("pk_test_51P7hVWSGA4khjVZjiEUVBXEAUvSucpfyzM0XGVGaFZfJFcvWOQvqBm9GCcsMUdY0XfsusDhl3Qtcdo5kZTK7rTmS00btwCzGsS");
+    const body={
+      products:cartItem
+    }
+    const headers={
+ "Content-Type":'application/json'
+    }
+    const response=await fetch("http://localhost:7000/api/create-checkout-session",{
+      method:'POST',
+      headers:headers,
+      body:JSON.stringify(body)
+    });
+    const session=await response.json();
+    const result=stripe.redirectToCheckout({
+      sessionId:session.id
+    });
+
+    if(result.error){
+      console.log(result.error);
+    }
+ }
   
 useLocalData(cartItem)
 
@@ -110,7 +134,9 @@ useLocalData(cartItem)
         </div>
 
 
-        <div className='price_details_list'>
+       {cartItem.length!=0 && (
+
+      <div className='price_details_list'>
           <h3 className='price_details'>Price Details</h3>
           <hr />
           <p className='price_details'>MRP Total <span className='price'>&#8377; {price}</span></p><hr />
@@ -121,16 +147,21 @@ useLocalData(cartItem)
           <p className='you_save'>you save &#8377; {discount}</p>
           <p></p>
           <div className='two_button'>
-            <button className='checkout'>CHECKOUT</button>&nbsp;
+            <button className='checkout' onClick={makePayment}>CHECKOUT</button>&nbsp;
             <button className='continue_shopping' onClick={() => navigate('/')}>CONTINUE SHOPPING</button>
 
           </div>
+         
         </div>
+        
+          )}
       </div>
-
+      {cartItem.length!=0 && (
       <button  className='clear_data_button'onClick={handleClearCart}>
         Clear Your Cart
-      </button>
+      </button>)}
+
+    
 
 
 
