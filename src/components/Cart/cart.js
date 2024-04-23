@@ -49,10 +49,23 @@ const handleClearCart=()=>{
   const total = total_amount < 600 ? total_amount + deliveryCharge : total_amount
 
  //payment integration
+//  const customer={
+//   name: "John Doe",
+//   email: "johndoe@example.com",
+//   address: {
+//     line1: "123 Main Street",
+//     city: "Bangalore",
+//     state: "Karnataka",
+//     postal_code: "560001",
+//     country: "IN"
+//   }
+// }
  const makePayment=async()=>{
-  const stripe = await loadStripe("pk_test_51P7hVWSGA4khjVZjiEUVBXEAUvSucpfyzM0XGVGaFZfJFcvWOQvqBm9GCcsMUdY0XfsusDhl3Qtcdo5kZTK7rTmS00btwCzGsS");
-    const body={
-      products:cartItem
+  console.log()
+  const stripe = await loadStripe(process.env.REACT_APP_PUBLISH_KEY);
+  const body={
+      products:cartItem,
+      // customer:customer
     }
     const headers={
  "Content-Type":'application/json'
@@ -69,6 +82,9 @@ const handleClearCart=()=>{
 
     if(result.error){
       console.log(result.error);
+    }
+    else{
+      handleClearCart();
     }
  }
   
